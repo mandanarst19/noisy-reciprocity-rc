@@ -16,14 +16,13 @@ All numbers below come from `results/`. Seeds are fixed (`common.net_seed`). Pyt
 | (h) reservoir | No standalone function. MC/KR wrap `echoes.ESNRegressor` / `echoes.reservoir._leaky_numba.harvest_states`. |
 | descriptors | `find_spectral_radius`, `compute_eigenvalue_gap`, `departure_from_normality` (`utils.py`) |
 
-**Behaviour of the authors' code that differs from the task/paper text** (I followed the code):
-- echoes always rescales W to `spectral_radius` (contrary to a comment in `metrics.py`).
+**Implementation notes (this repository follows the code where code and paper text describe different settings):**
+- echoes always rescales W to `spectral_radius`.
 - State noise is **uniform** in (-0.5, 0.5)·`noise` (std ≈ 2.9e-5 for 1e-4), added **after** tanh, and is also active in `predict()`, i.e. in testing (checked empirically). The paper describes Gaussian noise during training.
 - The MC readout uses states only (`fit_only_states=True`), not [x; u]. Per-delay R² is clipped at 0. Default ridge is 1e-10 and T = 3000; I pass 1e-5 and 3200.
-- The KR docstring says ρ = 0.99 and signal length 200; the signature has 0.95 and 500.
 - bctpy's `makefractalCIJ(6, E=4, s=4)` gives ~1343 links (k ≈ 21), so the paper's literal HM parameters cannot give k = 6 through bctpy alone.
 
-**Problems patched in memory (`authors_code.py`)**: (P1) `metrics.py` does not parse as published (unclosed docstring, split `W_in =` line, `W.float()` on numpy arrays); (P2) echoes 0.0.8 calls `Ridge(normalize=...)`, removed in scikit-learn 1.2 (the authors' pinned 1.3.2 fails too); (P3, in `common.py`) numba's RNG is unseeded (seeded explicitly) and `departure_from_normality` returns NaN for symmetric r = 1 networks because of a tiny negative radicand (clipped at 0; 256 rows repaired). Nothing else in the authors' numerics was altered.
+**Compatibility notes.** To run the authors’ code with Python 3.12 and current scikit-learn, a few small compatibility adjustments are applied at runtime (syntax and API updates; explicit seeding of the numba RNG; a numerical guard for symmetric networks in `departure_from_normality`). The original files are not modified or redistributed.
 
 I wrote one thing myself: `common.mc_curve` (per-delay R², Gaussian noise), used only in Step 2 and `diagnose_step1.py`, because the authors' MC returns only the sum. It matches their function at σ = 0 to ~1e-7.
 
@@ -42,13 +41,15 @@ Setup: 50 HM instances × 11 reciprocity levels; 250 random k-out nulls (5 per i
 
 **Verdict: partial reproduction.** Linear decline with reciprocity, significance, and HM > null are reproduced. The KR slope is close (0.05 steeper). The MC slope is about 22% shallower than the paper's. The paper's units match mine (change per unit reciprocity, 0 to 1).
 
+Absolute MC values are also lower than in the paper (Fig. 5, p. 11: ~9.5–11 for N = 64, k = 6; here ~7.9–8.8), while KR values fall in a similar range. This is consistent with the paper’s per-condition parameter optimisation, which I did not reproduce.
+
 **Post-hoc diagnostic** (`diagnose_step1.py`, HM, same instances, my validated reservoir): MC slope was -0.91 to -1.04 across noise protocols (none; Gaussian 1e-4 train only; train+test), readout with/without u(t), and ρ ∈ {0.95, 0.99}. None approaches -1.26, so these choices do not explain the gap.
 
 **Untested candidates:** the paper averages 5 training trials per instance (I use one, which may also explain the lower R²); the paper's "other parameters optimised for MC" and exact HM tuning of E and s; differences between the paper's and the repository's generator; number of delays or train/test details.
 
 ## Step 2 - PRELIMINARY observations
 
-Design as specified: r ∈ {0, .25, .5, .75, 1}, σ ∈ {0, 1e-4, ..., 1e-1}, Gaussian noise after tanh in training **and** testing, same networks as Step 1 (identical at r = 0, 0.5, 1), 50 HM + 250 null networks per r. The noise stream is shared across σ within a network. State RMS without noise is ~0.033 at every r (HM 0.0341 at r = 0 to 0.0327 at r = 1), so σ corresponds to a similar signal-to-noise ratio across r.
+Design: r ∈ {0, .25, .5, .75, 1}, σ ∈ {0, 1e-4, ..., 1e-1}, Gaussian noise after tanh in training **and** testing, same networks as Step 1 (identical at r = 0, 0.5, 1), 50 HM + 250 null networks per r. The noise stream is shared across σ within a network. State RMS without noise is ~0.033 at every r (HM 0.0341 at r = 0 to 0.0327 at r = 1), so σ corresponds to a similar signal-to-noise ratio across r.
 
 - **MC vs σ.** MC decreased with σ for every r and both network types. Lower r gave higher MC at every σ. HM paired difference (r = 0 minus r = 1): 0.93 at σ = 0 and 0.11 at σ = 0.1 (SE ≤ 0.06). The ratio of mean MC (r = 0 / r = 1) rose from 1.12 to 1.38.
 - **Fraction of noise-free MC retained** (HM) was similar across r, slightly higher at low r: 0.595 (r = 0) vs 0.571 (r = 1) at σ = 1e-3, and 0.307 vs 0.290 at σ = 1e-2. In this setting I see no sign that low reciprocity costs proportionally more MC under noise; in absolute terms low-r networks lose somewhat more because they start higher.
@@ -62,7 +63,7 @@ Design as specified: r ∈ {0, .25, .5, .75, 1}, σ ∈ {0, 1e-4, ..., 1e-1}, Ga
 
 1. HM generator = authors' `desired_links` variant (bctpy cannot reach k = 6 at E = 4, s = 4).
 2. NRC also applied to random nulls; 5 nulls per HM instance.
-3. ρ = 0.95 from my sweep (also the code default); KR docstring says 0.99.
+3. ρ = 0.95 from my sweep (also the code default).
 4. Step 1 noise/readout/clipping/transient follow the authors' code, not the paper text (see Step 0).
 5. T = 3200 and ridge 1e-5 passed explicitly (code defaults differ); one input seed per network (paper: 5 trials).
 6. Primary fits on the 11 level means; all-instance fits also reported. Extra CSV columns: `achieved_reciprocity`, `n_links`, `rho_used`.
