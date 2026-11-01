@@ -1,0 +1,19 @@
+[runtime] 12000 reservoir runs at ~12 ms each -> ~2 min expected
+  1/300 network families, 0.0 min
+  51/300 network families, 0.5 min
+  101/300 network families, 0.9 min
+  151/300 network families, 1.3 min
+  201/300 network families, 1.7 min
+  251/300 network families, 2.1 min
+
+=== beta (log10 sigma*_n ~ beta * log10 n), mean [95% bootstrap CI over networks] ===
+HM      r=0.00  beta=-2.995 [-3.026, -2.963]  defined for 50/50 networks, mean delays used 7.6
+HM      r=0.25  beta=-3.089 [-3.116, -3.063]  defined for 50/50 networks, mean delays used 8.6
+HM      r=0.50  beta=-2.999 [-3.042, -2.951]  defined for 50/50 networks, mean delays used 9.1
+HM      r=0.75  beta=-2.875 [-2.915, -2.836]  defined for 50/50 networks, mean delays used 9.5
+HM      r=1.00  beta=-2.749 [-2.795, -2.704]  defined for 50/50 networks, mean delays used 9.5
+random  r=0.00  beta=-3.064 [-3.077, -3.051]  defined for 250/250 networks, mean delays used 7.3
+random  r=0.25  beta=-3.112 [-3.125, -3.099]  defined for 250/250 networks, mean delays used 7.2
+random  r=0.50  beta=-3.164 [-3.176, -3.152]  defined for 250/250 networks, mean delays used 8.1
+random  r=0.75  beta=-3.058 [-3.073, -3.042]  defined for 250/250 networks, mean delays used 9.0
+random  r=1.00  beta=-2.925 [-2.943, -2.905]  defined for 250/250 networks, mean delays used 9.0

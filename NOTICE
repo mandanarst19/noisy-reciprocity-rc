@@ -1,0 +1,25 @@
+noisy-reciprocity-rc
+Copyright 2026 the repository author.
+
+This repository is NOT affiliated with the authors of the work below.
+
+It builds on the following publicly available work and calls (but does not redistribute)
+the authors' code, which it downloads at pinned commits into ./external/ when run:
+
+  1. F. Hadaeghi, K. Fakhar, M. Khajehnejad, C. C. Hilgetag,
+     "A Computational Perspective on the No-Strong-Loops Principle in Brain Networks",
+     bioRxiv 10.1101/2025.09.24.678310 (v2, June 2026).
+     Code: https://github.com/m00rcheh/network-reciprocity-RC-memory-capacity-and-kernel-rank
+           (utils.py, metrics.py; commit 6ca9d1fcf06e23d5c3d8e17d70c4b9abb9f9430a;
+            no LICENSE file was present in this repository when checked)
+
+  2. F. Hadaeghi, K. Fakhar, C. C. Hilgetag, network reciprocity control (NRC) algorithms,
+     Chaos 36, 023116 (2026); earlier preprint: bioRxiv 10.1101/2024.11.24.625064.
+     Code: https://github.com/m00rcheh/NRC_binary_and_weighted_Network_Reciprocity_Control
+           (Apache License 2.0; commit 8a9b08111379516540164ec0e525807697125841)
+
+  3. echoes (Echo State Networks in Python), F. Damicelli, https://github.com/fabridamicelli/echoes
+     (used unmodified at version 0.0.8 through the authors' metrics.py)
+
+This repository's own code is released under the Apache License 2.0 (see LICENSE). The LICENSE
+text was copied from the NRC repository (item 2).

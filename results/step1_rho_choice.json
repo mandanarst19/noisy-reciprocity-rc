@@ -1,0 +1,16 @@
+{
+  "rho": 0.95,
+  "grid": [
+    0.8,
+    0.9,
+    0.95,
+    0.99
+  ],
+  "mean_MC": {
+    "0.8": 7.58779,
+    "0.9": 8.3738,
+    "0.95": 8.733365000000001,
+    "0.99": 8.67766
+  },
+  "note": "best mean MC on r=0 HM networks (instances disjoint from the main run)"
+}
