@@ -38,7 +38,7 @@ Single topology family (HM), single size (N = 64, k = 6), binary weights, linear
 ## Attribution and references
 
 - Hadaeghi F., Fakhar K., Khajehnejad M., Hilgetag C.C. *A Computational Perspective on the No-Strong-Loops Principle in Brain Networks.* bioRxiv 10.1101/2025.09.24.678310 (v2, 2026).
-- Hadaeghi F., Fakhar K., Hilgetag C.C. network reciprocity control (NRC), *Chaos* 36, 023116 (2026) (citation details as given in the task brief; please verify before citing).
+- Hadaeghi F., Fakhar K., Hilgetag C.C. network reciprocity control (NRC), *Chaos* 36, 023116 (2026) Hadaeghi F., Fakhar K., Hilgetag C.C. Controlling reciprocity in binary and weighted networks: A novel density-conserving approach. Chaos 36, 023116 (2026). doi:10.1063/5.0304136.
 - echoes 0.0.8 (F. Damicelli) is used through the authors' code.
 
 The metrics repository had no LICENSE file when checked, so its code is not redistributed here. See `NOTICE`.
